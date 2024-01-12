@@ -7,12 +7,13 @@ import datetime
 import subprocess
 import psutil
 import socket
+from init import init 
 
-LOG_FILE = 'ids.log'
-DB_FILE = 'db.json'
+LOG_FILE = '/var/ids/ids.log'
+DB_FILE = '/var/ids/db.json'
 
 if not os.path.exists('/var/ids/'):
-    os.makedirs('/var/ids/')
+    init()
 
 logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -34,14 +35,7 @@ def build():
 
 def get_file_info(file_path):
     file_info = {
-        'sha512': hash_file(file_path, 'sha512'),
-        'sha256': hash_file(file_path, 'sha256'),
-        'md5': hash_file(file_path, 'md5'),
-        'last_modified': get_last_modified(file_path),
-        'creation_time': get_creation_time(file_path),
-        'owner': get_owner(file_path),
-        'group_owner': get_group_owner(file_path),
-        'size': get_size(file_path)
+        'sha512': hash_file(file_path, 'sha512'),'sha256': hash_file(file_path, 'sha256'),'md5': hash_file(file_path, 'md5'),'last_modified': get_last_modified(file_path),'creation_time': get_creation_time(file_path),'owner': get_owner(file_path),'group_owner': get_group_owner(file_path),'size': get_size(file_path)
     }
     return file_info
 
