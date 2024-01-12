@@ -5,6 +5,8 @@ import argparse
 import logging
 import datetime
 import subprocess
+import psutil
+import socket
 
 LOG_FILE = '/var/ids/ids.log'
 DB_FILE = '/var/ids/db.json'
@@ -66,14 +68,23 @@ def get_size(file_path):
     return str(os.path.getsize(file_path))
 
 def get_listening_ports():
+    listening_ports = {"TCP": [], "UDP": []}
+
     try:
-        result = subprocess.run(['netstat', '-tuln'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        listening_ports = result.stdout
+        for conn in psutil.net_connections(kind='inet'):
+            if conn.status == psutil.CONN_LISTEN:
+                if conn.type == socket.SOCK_STREAM:
+                    listening_ports["TCP"].append(conn.laddr.port)
+                elif conn.type == socket.SOCK_DGRAM:
+                    listening_ports["UDP"].append(conn.laddr.port)
     except Exception as e:
-        logging.error(f'Erreur lors de la recuperation des ports en ecoute : {str(e)}')
-        listening_ports = "Erreur lors de la recuperation des ports en ecoute"
+        print(f"Erreur lors de la récupération des ports en écoute : {str(e)}")
 
     return listening_ports
+
+ports_info = get_listening_ports()
+for protocol, ports in ports_info.items():
+    print(f"{protocol} Ports en écoute : {ports}")
 
 def check():
     if not os.path.exists(DB_FILE):
