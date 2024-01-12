@@ -19,7 +19,7 @@ console_handler.setLevel(logging.INFO)
 logging.getLogger().addHandler(console_handler)
 
 def build():
-    data = {}  
+    data = {}
 
     file_path = '/etc/shadow'
     file_info = get_file_info(file_path)
@@ -28,7 +28,7 @@ def build():
     with open(DB_FILE, 'w') as json_file:
         json.dump({'build_time': str(datetime.datetime.now()), 'files': data, 'listening_ports': get_listening_ports()}, json_file, indent=2)
 
-    logging.info('Commande build executee. Fichier JSON cree.')
+    logging.info('Command build executed. JSON file created.')
 
 def get_file_info(file_path):
     file_info = {
@@ -70,14 +70,14 @@ def get_listening_ports():
         result = subprocess.run(['netstat', '-tuln'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         listening_ports = result.stdout
     except Exception as e:
-        logging.error(f'Erreur lors de la recuperation des ports en ecoute : {str(e)}')
-        listening_ports = "Erreur lors de la recuperation des ports en ecoute"
+        logging.error(f'Error retrieving listening ports: {str(e)}')
+        listening_ports = "Error retrieving listening ports"
 
     return listening_ports
 
 def check():
     if not os.path.exists(DB_FILE):
-        logging.error(f'Le fichier {DB_FILE} n\'existe pas. Executez d\'abord la commande "build".')
+        logging.error(f'The file {DB_FILE} does not exist. Run the "build" command first.')
         return
 
     with open(DB_FILE, 'r') as json_file:
@@ -102,7 +102,7 @@ def find_changes(expected_state, current_state):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="IDS - Intrusion Detection System")
-    parser.add_argument("command", choices=["build", "check"], help="Commande a executer")
+    parser.add_argument("command", choices=["build", "check"], help="Command to execute")
     args = parser.parse_args()
 
     if args.command == "build":
