@@ -7,13 +7,12 @@ import datetime
 import subprocess
 import psutil
 import socket
-from init import init 
 
 LOG_FILE = '/var/ids/ids.log'
 DB_FILE = '/var/ids/db.json'
 
 if not os.path.exists('/var/ids/'):
-    init()
+    os.makedirs('/var/ids/')
 
 logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -21,17 +20,21 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
 logging.getLogger().addHandler(console_handler)
 
-def build():
-    data = {}
+def build(minify=False):
+    data = {}  
 
     file_path = '/etc/shadow'
     file_info = get_file_info(file_path)
     data[file_path] = file_info
 
     with open(DB_FILE, 'w') as json_file:
-        json.dump({'build_time': str(datetime.datetime.now()), 'files': data, 'listening_ports': get_listening_ports()}, json_file, indent=2)
+        if minify:
+            json.dump({'build_time': str(datetime.datetime.now()), 'files': data, 'listening_ports': get_listening_ports()}, json_file, separators=(',', ':'))
+        else:
+            json.dump({'build_time': str(datetime.datetime.now()), 'files': data, 'listening_ports': get_listening_ports()}, json_file, indent=2)
 
-    logging.info('Command build executed. JSON file created.')
+    logging.info('Commande build executee. Fichier JSON cree.')
+
 
 def get_file_info(file_path):
     file_info = {
@@ -104,10 +107,11 @@ def find_changes(expected_state, current_state):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="IDS - Intrusion Detection System")
-    parser.add_argument("command", choices=["build", "check"], help="Command to execute")
+    parser.add_argument("command", choices=["build", "check"], help="Commande a executer")
+    parser.add_argument("--minify", action="store_true", help="Minifier le fichier JSON (sans indentation)")
     args = parser.parse_args()
 
     if args.command == "build":
-        build()
+        build(minify=args.minify)
     elif args.command == "check":
         check()
