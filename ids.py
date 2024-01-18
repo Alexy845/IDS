@@ -21,24 +21,45 @@ console_handler.setLevel(logging.INFO)
 logging.getLogger().addHandler(console_handler)
 
 def build(minify=False):
-    data = {}  
+    data = {}
 
     file_path = '/etc/shadow'
     file_info = get_file_info(file_path)
     data[file_path] = file_info
 
+    build_time = str(datetime.datetime.now())
+    listening_ports = get_listening_ports()
+
+    json_data = {'build_time': build_time, 'files': data, 'listening_ports': listening_ports}
+
     with open(DB_FILE, 'w') as json_file:
         if minify:
-            json.dump({'build_time': str(datetime.datetime.now()), 'files': data, 'listening_ports': get_listening_ports()}, json_file, separators=(',', ':'))
+            json.dump(json_data, json_file, separators=(',', ':'))
         else:
-            json.dump({'build_time': str(datetime.datetime.now()), 'files': data, 'listening_ports': get_listening_ports()}, json_file, indent=2)
+            json.dump(json_data, json_file, indent=2)
 
     logging.info('Commande build executee. Fichier JSON cree.')
+    remove_spaces_and_newlines(DB_FILE)
 
+def remove_spaces_and_newlines(file_path):
+    with open(file_path, 'r') as json_file:
+        content = json_file.read()
+
+    content = content.replace(' ', '').replace('\n', '')
+
+    with open(file_path, 'w') as json_file:
+        json_file.write(content)
 
 def get_file_info(file_path):
     file_info = {
-        'sha512': hash_file(file_path, 'sha512'),'sha256': hash_file(file_path, 'sha256'),'md5': hash_file(file_path, 'md5'),'last_modified': get_last_modified(file_path),'creation_time': get_creation_time(file_path),'owner': get_owner(file_path),'group_owner': get_group_owner(file_path),'size': get_size(file_path)
+        'sha512': hash_file(file_path, 'sha512'),
+        'sha256': hash_file(file_path, 'sha256'),
+        'md5': hash_file(file_path, 'md5'),
+        'last_modified': get_last_modified(file_path),
+        'creation_time': get_creation_time(file_path),
+        'owner': get_owner(file_path),
+        'group_owner': get_group_owner(file_path),
+        'size': get_size(file_path)
     }
     return file_info
 
