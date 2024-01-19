@@ -23,21 +23,20 @@ Pour utiliser L'IDS, suivez ces étapes:
     python ids.py --help
     ```
 
-2. Exécutez un exemple simple en utilisant IDS:
+2. Pour build l'application IDS:
     ```bash
     python ids.py build
     ```
 
-3. Exécutez un exemple simple en utilisant IDS:
+3. Pour exécuter l'application IDS:
     ```bash
     python ids.py check
     ```
-
-4. Exécutez un exemple simple en utilisant IDS:
+4. Pour la backup de l'application IDS:
     ```bash
     journalctl -u backup.service
     ```
-5. Exécutez un exemple simple en utilisant IDS:
+5. Pour la backup de l'application IDS:
     ```bash
     journalctl -u backup.timer
     ```
@@ -46,5 +45,6 @@ Pour utiliser L'IDS, suivez ces étapes:
 
 Le fichier de configuration IDS (`config.json`) vous permet de personnaliser le comportement de l'application. Voici le schéma du fichier de configuration:
 ```json
+
 ```
 
