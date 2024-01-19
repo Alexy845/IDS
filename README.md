@@ -5,7 +5,7 @@ psutil
 
 mettre le user et le group dans init.py
 lancer en sudo
-puis build --minify
+puis build
 et check
 backup.service = reboot
 ```

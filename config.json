@@ -1,0 +1,6 @@
+{
+    "files_to_monitor": [
+      "/etc/shadow"
+    ],
+    "autre_parametre": "valeur"
+  }
