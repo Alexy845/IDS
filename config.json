@@ -1,6 +1,6 @@
 {
-    "files_to_monitor": [
-      "/etc/shadow"
-    ],
-    "autre_parametre": "valeur"
-  }
+  "files_to_monitor": [
+    "/etc/shadow"
+  ],
+  "monitor_ports": true
+}
