@@ -42,7 +42,6 @@ python ids.py check
 ```bash
 journalctl -u backup.service
 ```
-5. Pour la backup de l'application IDS:
 ```bash
 journalctl -u backup.timer
 ```
